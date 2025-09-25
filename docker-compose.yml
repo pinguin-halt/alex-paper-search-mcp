@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  openalex-mcp-server:
+    build: .
+    environment:
+      - OPENALEX_EMAIL=${OPENALEX_EMAIL}
+      - OPENALEX_API_KEY=${OPENALEX_API_KEY:-}
+    restart: unless-stopped
+    volumes:
+      # Optional: Mount logs directory
+      - ./logs:/app/logs
+    networks:
+      - openalex-network
+
+networks:
+  openalex-network:
+    driver: bridge
