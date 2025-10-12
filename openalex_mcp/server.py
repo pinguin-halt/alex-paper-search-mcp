@@ -12,7 +12,7 @@ and more, providing access to hundreds of millions of interconnected academic wo
 import os
 import logging
 from typing import List, Dict, Optional
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
 from .searcher import OpenAlexSearcher
 
 # Set up logging
@@ -362,9 +362,8 @@ async def search_by_institution(
 
 def main():
     """Main entry point for the server."""
-    logger.info("Starting OpenAlex MCP Server...")
-    mcp.run(transport="stdio")
-
+    logger.info("Starting OpenAlex MCP Server on port 8006...")
+    mcp.run(transport="http", host="0.0.0.0", port=8006)
 
 if __name__ == "__main__":
     main()
