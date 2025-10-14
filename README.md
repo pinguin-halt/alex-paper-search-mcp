@@ -1,6 +1,6 @@
 # OpenAlex Paper Search MCP Server
 
-A [Model Context Protocol (MCP)](https://github.com/modelcontextprotocol/mcp) server that provides comprehensive access to the [OpenAlex](https://openalex.org/) academic database. Search and retrieve academic papers, authors, institutions, and more with advanced filtering capabilities.
+A Model Context Protocol (MCP) server that provides comprehensive access to the [OpenAlex](https://openalex.org/) academic database. Search and retrieve academic papers, authors, institutions, and more with advanced filtering capabilities.
 
 ## Features
 
@@ -17,7 +17,7 @@ A [Model Context Protocol (MCP)](https://github.com/modelcontextprotocol/mcp) se
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/openalex-mcp-server.git
+git clone https://github.com/LeoGitGuy/alex-paper-search-mcp.git
 cd openalex-mcp-server
 
 # Install dependencies
