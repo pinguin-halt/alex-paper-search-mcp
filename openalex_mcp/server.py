@@ -362,8 +362,8 @@ async def search_by_institution(
 
 def main():
     """Main entry point for the server."""
-    logger.info("Starting OpenAlex MCP Server on port 8006...")
-    mcp.run(transport="http", host="0.0.0.0", port=8006)
+    logger.info("Starting OpenAlex MCP Server on port 8000...")
+    mcp.run(transport="http", host="0.0.0.0", port=8000)
 
 if __name__ == "__main__":
     main()
