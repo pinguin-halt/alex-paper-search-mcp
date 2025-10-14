@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and README (needed for package metadata)
-COPY alex-paper-search-mcp/pyproject.toml alex-paper-search-mcp/README.md ./
+COPY pyproject.toml README.md ./
 RUN pip install -e .
 
 # Copy the application code
-COPY alex-paper-search-mcp/openalex_mcp/ ./openalex_mcp/
+COPY openalex_mcp/ ./openalex_mcp/
 
 # Set environment variables
 ENV PYTHONPATH=/app
