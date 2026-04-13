@@ -360,6 +360,54 @@ async def search_by_institution(
     return [paper.to_dict() for paper in papers] if papers else []
 
 
+@mcp.tool()
+async def search_works_by_author(
+    author_name: str,
+    institution: Optional[str] = None,
+    max_results: int = 10,
+    from_publication_date: Optional[str] = None,
+    to_publication_date: Optional[str] = None,
+    publication_year: Optional[int] = None,
+    sort: Optional[str] = "publication_date",
+    order: Optional[str] = "desc"
+) -> List[Dict]:
+    """Search for papers by a specific author.
+    
+    Finds papers written by an author, optionally using their institution 
+    to disambiguate authors with the same name.
+    
+    Args:
+        author_name: Author's full name (e.g., 'Daron Acemoglu').
+        institution: Optional institution to disambiguate the author (e.g., 'MIT').
+        max_results: Maximum number of papers to return (default: 10).
+        from_publication_date: Published on or after this date (format: "YYYY-MM-DD").
+        to_publication_date: Published on or before this date (format: "YYYY-MM-DD").
+        publication_year: Published in this exact year (integer).
+        sort: Sort field (default: 'publication_date').
+        order: Sort order (default: 'desc').
+        
+    Returns:
+        List of paper metadata from the specified author.
+        
+    Example:
+        search_works_by_author("Daron Acemoglu", institution="MIT", max_results=15)
+    """
+    kwargs = {
+        'sort': sort,
+        'order': order
+    }
+    
+    if from_publication_date is not None:
+        kwargs['from_publication_date'] = from_publication_date
+    if to_publication_date is not None:
+        kwargs['to_publication_date'] = to_publication_date
+    if publication_year is not None:
+        kwargs['publication_year'] = publication_year
+    
+    papers = searcher.search_by_author(author_name, institution, max_results, **kwargs)
+    return [paper.to_dict() for paper in papers] if papers else []
+
+
 def main():
     """Main entry point for the server."""
     logger.info("Starting OpenAlex MCP Server on port 8000...")
