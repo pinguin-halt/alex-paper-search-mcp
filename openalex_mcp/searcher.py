@@ -99,6 +99,73 @@ class OpenAlexSearcher:
             logger.error(f"OpenAlex search failed: {e}")
             return []
 
+    def search_by_author(self, author_name: str, institution: Optional[str] = None, max_results: int = 10, **kwargs) -> List[Paper]:
+        """Search papers from a specific author
+        
+        Args:
+            author_name: Author's full name
+            institution: Optional current institution to help disambiguate authors
+            max_results: Maximum number of results to return
+            **kwargs: Advanced filter options (same as search method)
+                
+        Returns:
+            List of Paper objects
+        """
+        try:
+            from pyalex import Authors, Institutions
+            logger.info(f"Searching for author: {author_name}")
+            
+            inst_id = None
+            if institution:
+                insts = Institutions().search(institution).get()
+                if insts:
+                    inst_id = insts[0]["id"].replace("https://openalex.org/", "")
+                    logger.info(f"Found institution ID: {inst_id} for {institution}")
+                else:
+                    logger.warning(f"Could not find institution matching: {institution}")
+            
+            author_query = Authors().search(author_name)
+            if inst_id:
+                author_query = author_query.filter(affiliations={"institution": {"id": inst_id}})
+                
+            auths = author_query.get()
+            if not auths:
+                logger.warning(f"No author found matching name '{author_name}'" + 
+                               (f" and institution '{institution}'" if institution else ""))
+                return []
+                
+            author = auths[0]
+            author_id = author["id"].replace("https://openalex.org/", "")
+            logger.info(f"Found author: {author.get('display_name')} (ID: {author_id})")
+            
+            works_query = Works().filter(author={"id": author_id})
+            works_query = self._apply_convenience_filters(works_query, **kwargs)
+            
+            sort_field = kwargs.get('sort', 'publication_date')
+            sort_order = kwargs.get('order', 'desc')
+            if sort_field:
+                sort_kwargs = {sort_field: sort_order}
+                works_query = works_query.sort(**sort_kwargs)
+            
+            results = works_query.get()[:max_results]
+            
+            papers = []
+            for work in results:
+                try:
+                    paper = self._convert_to_paper(work)
+                    if paper:
+                        papers.append(paper)
+                except Exception as e:
+                    logger.warning(f"Failed to convert work to paper: {e}")
+                    continue
+                    
+            logger.info(f"Found {len(papers)} papers for author {author_name}")
+            return papers
+            
+        except Exception as e:
+            logger.error(f"Author search failed: {e}")
+            return []
+
     def _apply_convenience_filters(self, works_query, **kwargs):
         """Apply convenience filters using PyAlex's filter() method"""
         
